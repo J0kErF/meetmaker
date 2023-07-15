@@ -29,6 +29,13 @@
 #   -> 1 PRESENTS THE TAKEN SLOTS
 from person import Person
 
+
+def freeWindows(persons):
+    tmp = [persons[0].timesTable[i]&persons[1].timesTable[i] for i in range(96)]
+    for p in persons:
+        tmp = [tmp[i]&p.timesTable[i] for i in range(96)]
+    return tmp
+
 p1 = Person("mohammad")
 p2 = Person("salah")
 p3 = Person("swalha")
@@ -57,9 +64,8 @@ p3.addMeeting("13:45","16:00")
 persons=[p1,p2,p3]
 # lets say that we want to do a meeting between p1 and p2
 # the concept is to do AND bitwise operation with the timestable for both of p1 and p2
-tmp = [persons[0].timesTable[i]&persons[1].timesTable[i] for i in range(96)]
-for p in persons:
-    tmp = [tmp[i]&p.timesTable[i] for i in range(96)]
+
+tmp = freeWindows(persons)
 freeWindow=""
 for i in range (96):
     if tmp[i]==1 and freeWindow=="":
