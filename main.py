@@ -27,41 +27,43 @@
 #   EACH CELL CONTAINS THE VALUE OR 0 OR 1
 #   -> 0 PRESENTS THE FREE SLOTS
 #   -> 1 PRESENTS THE TAKEN SLOTS
+from person import Person
 
-A=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-print(len(A))
-startH=input("enter the start hour [xx:xx]: ")
-endH=input("enter the end hour [xx:xx]: ")
-startM=int(startH[3]+""+startH[4])/15
-startH=int(startH[0]+""+startH[1])%24
-endM=int(endH[3]+""+endH[4])/15
-endH=int(endH[0]+""+endH[1])%24
-print(startH,startM,endH,endM)
-A[int(startH*4+startM)]=1
-A[int(endH*4+endM)]=1
-index=int(startH*4+startM)
-end=int(endH*4+endM)
-while index!=end:
-    A[index]=1
-    index=index+1
-    if index>=96:
-        index=index%96
+p1 = Person("mohammad")
+p2 = Person("salah")
+p3 = Person("swalha")
 
-meetings=input("enter the number of meetings: ")
-for m in range(int(meetings)):
-    startH=input("enter the start of meeting number "+str(m+1)+" in format [xx:xx]")
-    endH=input("enter the end of meeting number "+str(m+1)+" in format [xx:xx]")
-    startM=int(startH[3]+""+startH[4])/15
-    startH=int(startH[0]+""+startH[1])%24
-    endM=int(endH[3]+""+endH[4])/15
-    endH=int(endH[0]+""+endH[1])%24
-    index=int(startH*4+startM)
-    end=int(endH*4+endM)
-    while index!=end:
-        A[index]=0
-        index=index+1
-        if index>=96:
-            index=index%96
-for i in range(96):
-    if A[i]==1:
-        print(i)
+p1.setWorkingHours("08:00","16:00")
+p2.setWorkingHours("09:00","17:00")
+p3.setWorkingHours("10:15","17:00")
+
+p1.addMeeting("08:15","10:00")
+p1.addMeeting("10:15","11:00")
+p1.addMeeting("11:00","11:45")
+p1.addMeeting("11:45","12:00")
+p1.addMeeting("12:15","13:00")
+
+p2.addMeeting("09:15","10:00")
+p2.addMeeting("10:15","11:00")
+p2.addMeeting("11:00","11:45")
+p2.addMeeting("11:45","12:15")
+p2.addMeeting("13:45","16:00")
+
+p3.addMeeting("09:15","10:00")
+p3.addMeeting("10:15","11:00")
+p3.addMeeting("11:00","11:45")
+p3.addMeeting("11:45","12:15")
+p3.addMeeting("13:45","16:00")
+persons=[p1,p2,p3]
+# lets say that we want to do a meeting between p1 and p2
+# the concept is to do AND bitwise operation with the timestable for both of p1 and p2
+tmp = [persons[0].timesTable[i]&persons[1].timesTable[i] for i in range(96)]
+for p in persons:
+    tmp = [tmp[i]&p.timesTable[i] for i in range(96)]
+freeWindow=""
+for i in range (96):
+    if tmp[i]==1 and freeWindow=="":
+        freeWindow=i
+    if tmp[i]==0 and freeWindow!="":
+        print ("[",int(freeWindow/4),":",int((freeWindow%4)*15)," ---> ",int((i-1)/4),":",int(((i-1)%4)*15),"]")
+        freeWindow=""
